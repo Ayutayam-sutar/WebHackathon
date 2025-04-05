@@ -1,0 +1,775 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Portal</title>
+  <style>
+    :root {
+      --primary: #004080;
+      --primary-dark: #003060;
+      --primary-light: #0066cc;
+      --accent: #ff8c00;
+      --light: #eef2f3;
+      --text: #333;
+      --spacing: 1rem;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--light);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    header {
+      background: var(--primary);
+      color: white;
+      padding: var(--spacing);
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    nav {
+      background: var(--primary-dark);
+      padding: var(--spacing);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    nav button {
+      padding: 0.6rem 1rem;
+      color: white;
+      background: var(--primary-light);
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+
+    nav button:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    nav button.active {
+      background: var(--accent);
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        padding: 0.5rem;
+      }
+      
+      nav button {
+        width: 100%;
+        margin: 0.2rem 0;
+      }
+    }
+
+    main {
+      padding: var(--spacing);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    section {
+      display: none;
+      background: white;
+      padding: var(--spacing);
+      border-radius: 8px;
+      margin-top: var(--spacing);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      animation: fadeIn 0.5s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    section.active {
+      display: block;
+    }
+
+    h2 {
+      color: var(--primary);
+      margin-bottom: var(--spacing);
+      border-bottom: 2px solid var(--light);
+      padding-bottom: 0.5rem;
+    }
+
+    table {
+      width: 100%;
+      margin-top: var(--spacing);
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    tr:nth-child(even) {
+      background-color: var(--light);
+    }
+
+    @media (max-width: 600px) {
+      table, thead, tbody, th, td, tr {
+        display: block;
+      }
+      
+      thead tr {
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+      }
+      
+      tr {
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+      }
+      
+      td {
+        border: none;
+        position: relative;
+        padding-left: 50%;
+      }
+      
+      td:before {
+        position: absolute;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+        font-weight: bold;
+      }
+      
+      td:nth-of-type(1):before { content: "Course"; }
+      td:nth-of-type(2):before { content: "Grade"; }
+      td:nth-of-type(3):before { content: "Feedback"; }
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    input, select, textarea, button[type="submit"] {
+      margin-top: 0.5rem;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: var(--spacing);
+    }
+
+    select, input[type="file"] {
+      background-color: white;
+    }
+
+    button[type="submit"] {
+      background-color: var(--primary-light);
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      border: none;
+    }
+
+    button[type="submit"]:hover {
+      background-color: var(--accent);
+    }
+
+    .notification {
+      background: #fff8dc;
+      padding: 1rem;
+      border-left: 5px solid var(--accent);
+      margin-bottom: 0.8rem;
+      border-radius: 0 4px 4px 0;
+      transition: transform 0.3s ease;
+    }
+
+    .notification:hover {
+      transform: translateX(5px);
+    }
+
+    .courses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1rem;
+    }
+
+    .course-card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 1rem;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    .course-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .course-card h3 {
+      color: var(--primary);
+    }
+
+    .course-card p {
+      margin: 0.5rem 0;
+    }
+
+    .course-card button {
+      background: var(--primary-light);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+    }
+
+    .course-card button:hover {
+      background: var(--accent);
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: #eee;
+      border-radius: 5px;
+      margin: 0.5rem 0;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: var(--primary-light);
+      border-radius: 5px;
+      width: 0%;
+      transition: width 1s ease-in-out;
+    }
+
+    .success-message, .error-message {
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+      display: none;
+    }
+
+    .success-message {
+      background: #dff0d8;
+      border-left: 4px solid #5cb85c;
+    }
+
+    .error-message {
+      background: #f2dede;
+      border-left: 4px solid #d9534f;
+    }
+
+    .loader {
+      display: none;
+      width: 30px;
+      height: 30px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 1rem auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Student Portal</h1>
+  <p id="current-date">Loading...</p>
+</header>
+
+<nav id="main-nav">
+  <button data-section="courses" class="active">Course Enrolment</button>
+  <button data-section="lectures">Lecture Access</button>
+  <button data-section="assignments">Assignments</button>
+  <button data-section="quiz">Quiz & Exams</button>
+  <button data-section="grades">Grades & Feedback</button>
+  <button data-section="notifications">Notifications <span id="notification-count" class="badge">3</span></button>
+</nav>
+
+<main>
+  <section id="courses" class="active">
+    <h2>Course Enrolment</h2>
+    <p>Available courses for this semester:</p>
+    
+    <div class="courses-grid">
+      <div class="course-card">
+        <h3>Math 101</h3>
+        <p>Indrtduction to Indian knowledge system </p>
+        <p>Credits: 3</p>
+        <p>Professor: Dr.Virat kohli</p>
+        <button class="enroll-btn" data-course="Math 101">Enroll</button>
+      </div>
+      
+      <div class="course-card">
+        <h3>Physics 201</h3>
+        <p>University physics and electromagnetism</p>
+        <p>Credits: 4</p>
+        <p>Professor: Dr.Moushami Dash</p>
+        <button class="enroll-btn" data-course="Physics 201">Enroll</button>
+      </div>
+      
+      <div class="course-card">
+        <h3>History 110</h3>
+        <p>Data structure and algorithm</p>
+        <p>Credits: 3</p>
+        <p>Professor: Dr.Harekrishna</p>
+        <button class="enroll-btn" data-course="History 110">Enroll</button>
+      </div>
+    </div>
+    
+    <div id="enrollment-message" class="success-message"></div>
+    <div class="loader" id="enrollment-loader"></div>
+  </section>
+
+  <section id="lectures">
+    <h2>Lecture Access</h2>
+    <div class="courses-grid">
+      <div class="course-card">
+        <h3>Math 101</h3>
+        <p>Next lecture: Today, 10:00 AM</p>
+        <div class="progress-bar">
+          <div class="progress-bar-fill" style="width: 60%"></div>
+        </div>
+        <p>6/10 lectures completed</p>
+        <button onclick="watchLecture('Math 101')">Watch Recorded Lecture</button>
+      </div>
+      
+      <div class="course-card">
+        <h3>Physics 201</h3>
+        <p>Next lecture: Tomorrow, 2:00 PM</p>
+        <div class="progress-bar">
+          <div class="progress-bar-fill" style="width: 40%"></div>
+        </div>
+        <p>4/10 lectures completed</p>
+        <button onclick="joinLiveClass('Physics 201')">Join Live Class</button>
+      </div>
+      
+      <div class="course-card">
+        <h3>History 110</h3>
+        <p>Next lecture: Wednesday, 11:30 AM</p>
+        <div class="progress-bar">
+          <div class="progress-bar-fill" style="width: 70%"></div>
+        </div>
+        <p>7/10 lectures completed</p>
+        <button onclick="downloadMaterials('History 110')">Download Materials</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="assignments">
+    <h2>Assignment Submission</h2>
+    <form id="assignment-form">
+      <label for="assignment-select">Choose Assignment:</label>
+      <select id="assignment-select" required>
+        <option value="">-- Select an assignment --</option>
+        <option value="Math Homework 1">Math Homework 1</option>
+        <option value="Physics Lab Report">Physics Lab Report</option>
+        <option value="History Essay">History Essay</option>
+      </select>
+      
+      <label for="assignment-file">Upload File:</label>
+      <input type="file" id="assignment-file" required />
+      
+      <label for="assignment-notes">Additional Notes:</label>
+      <textarea id="assignment-notes" rows="3" placeholder="Any comments for your instructor?"></textarea>
+      
+      <button type="submit">Submit Assignment</button>
+    </form>
+    
+    <div id="assignment-success" class="success-message">Assignment submitted successfully!</div>
+    <div id="assignment-error" class="error-message">Please fill out all required fields.</div>
+    
+    <h3>Upcoming Assignments</h3>
+    <table id="upcoming-assignments">
+      <tr>
+        <th>Assignment</th>
+        <th>Course</th>
+        <th>Due Date</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>Math Homework 1</td>
+        <td>Math 101</td>
+        <td>Apr 10, 2025</td>
+        <td>Not Started</td>
+      </tr>
+      <tr>
+        <td>Physics Lab Report</td>
+        <td>Physics 201</td>
+        <td>Apr 15, 2025</td>
+        <td>In Progress</td>
+      </tr>
+      <tr>
+        <td>History Essay</td>
+        <td>History 110</td>
+        <td>Apr 7, 2025</td>
+        <td>Due Soon</td>
+      </tr>
+    </table>
+  </section>
+
+  <section id="quiz">
+    <h2>Quiz & Exam Participation</h2>
+    
+    <div class="courses-grid">
+      <div class="course-card">
+        <h3>Math 101 Quiz</h3>
+        <p>Duration: 30 minutes</p>
+        <p>Questions: 20</p>
+        <p>Available until: Apr 12, 2025</p>
+        <button onclick="startQuiz('Math 101')">Start Quiz</button>
+      </div>
+      
+      <div class="course-card">
+        <h3>Physics 201 Midterm</h3>
+        <p>Duration: 90 minutes</p>
+        <p>Questions: 50</p>
+        <p>Available on: Apr 20, 2025</p>
+        <button disabled>Not Yet Available</button>
+      </div>
+    </div>
+    
+    <h3>Previous Results</h3>
+    <table>
+      <tr>
+        <th>Quiz/Exam</th>
+        <th>Score</th>
+        <th>Date Taken</th>
+      </tr>
+      <tr>
+        <td>Physics Quiz 1</td>
+        <td>85%</td>
+        <td>Mar 25, 2025</td>
+      </tr>
+      <tr>
+        <td>Math Quiz 1</td>
+        <td>92%</td>
+        <td>Mar 15, 2025</td>
+      </tr>
+    </table>
+  </section>
+
+  <section id="grades">
+    <h2>Grades & Feedback</h2>
+    <table id="grades-table">
+      <tr>
+        <th>Course</th>
+        <th>Current Grade</th>
+        <th>Feedback</th>
+      </tr>
+      <tr>
+        <td>Math 101</td>
+        <td>A (92%)</td>
+        <td>Excellent work on derivatives and integrals!</td>
+      </tr>
+      <tr>
+        <td>Physics 201</td>
+        <td>B+ (87%)</td>
+        <td>Good effort on lab reports, improve theoretical explanations.</td>
+      </tr>
+      <tr>
+        <td>History 110</td>
+        <td>A- (90%)</td>
+        <td>Thorough research, could improve citation format.</td>
+      </tr>
+    </table>
+    
+    <h3>Grade Distribution</h3>
+    <div class="courses-grid">
+      <div class="course-card">
+        <h3>Math 101</h3>
+        <p>Homework: 25%</p>
+        <p>Quizzes: 15%</p>
+        <p>Midterm: 30%</p>
+        <p>Final Exam: 30%</p>
+      </div>
+      
+      <div class="course-card">
+        <h3>Physics 201</h3>
+        <p>Homework: 15%</p>
+        <p>Lab Reports: 25%</p>
+        <p>Midterm: 25%</p>
+        <p>Final Exam: 35%</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="notifications">
+    <h2>Notifications</h2>
+    <button id="mark-all-read">Mark All as Read</button>
+    
+    <div id="notifications-list">
+      <div class="notification" data-id="1">
+        <h3>🔔 Class Reminder</h3>
+        <p>Math class starts at 10 AM today</p>
+        <small>Today, 8:00 AM</small>
+      </div>
+      
+      <div class="notification" data-id="2">
+        <h3>📢 Assignment Due</h3>
+        <p>Assignment "Lab Report" due tomorrow</p>
+        <small>Yesterday, 3:30 PM</small>
+      </div>
+      
+      <div class="notification" data-id="3">
+        <h3>📝 New Quiz Posted</h3>
+        <p>New quiz posted in History 110</p>
+        <small>Apr 3, 2025</small>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  // Initialize the portal
+  document.addEventListener('DOMContentLoaded', function() {
+    // Set current date
+    const now = new Date();
+    document.getElementById('current-date').textContent = now.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+    
+    // Navigation functionality
+    const navButtons = document.querySelectorAll('#main-nav button');
+    navButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const sectionId = this.getAttribute('data-section');
+        showSection(sectionId);
+        
+        // Update active button
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+    
+    // Course enrollment
+    const enrollButtons = document.querySelectorAll('.enroll-btn');
+    enrollButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        const courseName = this.getAttribute('data-course');
+        enrollInCourse(courseName, this);
+      });
+    });
+    
+    // Assignment submission
+    const assignmentForm = document.getElementById('assignment-form');
+    assignmentForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      submitAssignment();
+    });
+    
+    // Mark all notifications as read
+    const markAllReadBtn = document.getElementById('mark-all-read');
+    markAllReadBtn.addEventListener('click', function() {
+      markAllNotificationsAsRead();
+    });
+    
+    // Individual notification click
+    const notifications = document.querySelectorAll('.notification');
+    notifications.forEach(notification => {
+      notification.addEventListener('click', function() {
+        markNotificationAsRead(this);
+      });
+    });
+    
+    // Initialize progress bars animation
+    setTimeout(() => {
+      document.querySelectorAll('.progress-bar-fill').forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = "0%";
+        setTimeout(() => {
+          bar.style.width = width;
+        }, 300);
+      });
+    }, 500);
+  });
+  
+  // Show section function
+  function showSection(id) {
+    document.querySelectorAll("main section").forEach(section => {
+      section.classList.remove("active");
+    });
+    document.getElementById(id).classList.add("active");
+  }
+  
+  // Enroll in course function
+  function enrollInCourse(courseName, buttonElement) {
+    const loader = document.getElementById('enrollment-loader');
+    const message = document.getElementById('enrollment-message');
+    
+    // Disable button and show loader
+    buttonElement.disabled = true;
+    loader.style.display = 'block';
+    message.style.display = 'none';
+    
+    // Simulate API call
+    setTimeout(() => {
+      loader.style.display = 'none';
+      message.textContent = `Successfully enrolled in ${courseName}!`;
+      message.style.display = 'block';
+      
+      // Update button
+      buttonElement.textContent = 'Enrolled';
+      buttonElement.style.backgroundColor = '#5cb85c';
+      
+      // Add notification
+      addNotification(`✅ Enrollment Successful`, `You have been enrolled in ${courseName}`);
+    }, 1500);
+  }
+  
+  // Submit assignment function
+  function submitAssignment() {
+    const assignmentSelect = document.getElementById('assignment-select');
+    const assignmentFile = document.getElementById('assignment-file');
+    const successMessage = document.getElementById('assignment-success');
+    const errorMessage = document.getElementById('assignment-error');
+    
+    // Validate form
+    if (assignmentSelect.value === '' || assignmentFile.files.length === 0) {
+      errorMessage.style.display = 'block';
+      successMessage.style.display = 'none';
+      
+      // Hide error after 3 seconds
+      setTimeout(() => {
+        errorMessage.style.display = 'none';
+      }, 3000);
+      
+      return;
+    }
+    
+    // Hide error and show success
+    errorMessage.style.display = 'none';
+    successMessage.style.display = 'block';
+    
+    // Reset form
+    document.getElementById('assignment-form').reset();
+    
+    // Update assignment table
+    const assignmentTable = document.getElementById('upcoming-assignments');
+    const rows = assignmentTable.querySelectorAll('tr');
+    
+    for (let i = 1; i < rows.length; i++) {
+      const cells = rows[i].querySelectorAll('td');
+      if (cells[0].textContent === assignmentSelect.value) {
+        cells[3].textContent = 'Submitted';
+        cells[3].style.color = '#5cb85c';
+        break;
+      }
+    }
+    
+    // Add notification
+    addNotification(`📤 Assignment Submitted`, `Your ${assignmentSelect.value} has been submitted successfully`);
+    
+    // Hide success message after 3 seconds
+    setTimeout(() => {
+      successMessage.style.display = 'none';
+    }, 3000);
+  }
+  
+  // Watch lecture function
+  function watchLecture(course) {
+    alert(`Opening recorded lecture for ${course}`);
+  }
+  
+  // Join live class function
+  function joinLiveClass(course) {
+    alert(`Joining live class for ${course}`);
+  }
+  
+  // Download materials function
+  function downloadMaterials(course) {
+    alert(`Downloading materials for ${course}`);
+  }
+  
+  // Start quiz function
+  function startQuiz(course) {
+    if (confirm(`Are you ready to start the ${course} quiz? You will have 30 minutes to complete it.`)) {
+      alert(`${course} quiz started. Good luck!`);
+    }
+  }
+  
+  // Add notification function
+  function addNotification(title, message) {
+    const notificationsList = document.getElementById('notifications-list');
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.setAttribute('data-id', Date.now());
+    notification.innerHTML = `
+      <h3>${title}</h3>
+      <p>${message}</p>
+      <small>Today, ${timestamp}</small>
+    `;
+    
+    // Add to the top of the list
+    notificationsList.insertBefore(notification, notificationsList.firstChild);
+    
+    // Update notification count
+    updateNotificationCount();
+    
+    // Add click event
+    notification.addEventListener('click', function() {
+      markNotificationAsRead(this);
+    });
+  }
+  
+  // Mark notification as read
+  function markNotificationAsRead(notification) {
+    notification.style.opacity = '0.6';
+    updateNotificationCount();
+  }
+  
+  // Mark all notifications as read
+  function markAllNotificationsAsRead() {
+    const notifications = document.querySelectorAll('.notification');
+    notifications.forEach(notification => {
+      notification.style.opacity = '0.6';
+    });
+    
+    // Reset notification count
+    document.getElementById('notification-count').textContent = '0';
+  }
+  
+  // Update notification count
+  function updateNotificationCount() {
+    const unreadCount = document.querySelectorAll('.notification:not([style*="opacity"])').length;
+    document.getElementById('notification-count').textContent = unreadCount;
+  }
+</script>
+
+</body>
+</html>

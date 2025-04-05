@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+       
+        body {
+            display: flex;
+            background-color: #f5f5f5;
+        }
+       
+        .sidebar {
+            width: 200px;
+            background-color: #2c3e50;
+            color: white;
+            height: 100vh;
+            padding: 20px 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 100;
+        }
+       
+        .sidebar-title {
+            padding: 0 20px 20px 20px;
+            font-size: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+       
+        .sidebar-menu {
+            list-style: none;
+        }
+       
+        .sidebar-menu li {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+       
+        .sidebar-menu li:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+       
+        .sidebar-menu li.active {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+       
+        .sidebar-menu i {
+            margin-right: 10px;
+        }
+       
+        .main-content {
+            margin-left: 200px;
+            width: calc(100% - 200px);
+            padding: 20px;
+        }
+       
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+       
+        .notification-icon {
+            position: relative;
+            cursor: pointer;
+        }
+       
+        .notification-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+       
+        .panel {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+       
+        .panel.active {
+            display: block;
+        }
+       
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+       
+        .button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+       
+        .button:hover {
+            background-color: #2980b9;
+        }
+       
+        .course-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+       
+        .course-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+       
+        .course-meta {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+       
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+       
+        table th {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 2px solid #ddd;
+            color: #333;
+        }
+       
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+       
+        .progress-bar {
+            width: 100%;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+       
+        .progress-bar-fill {
+            height: 10px;
+            background-color: #3498db;
+            width: 75%;
+        }
+       
+        .feedback-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+       
+        .notification-box {
+            width: 100%;
+            height: 80px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 10px;
+            resize: none;
+            margin-bottom: 10px;
+        }
+       
+        .notification-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            padding: 8px 15px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+       
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+       
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            border-radius: 5px;
+            width: 50%;
+            max-width: 500px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+       
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+       
+        .form-group {
+            margin-bottom: 15px;
+        }
+       
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+       
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+       
+        /* For notifications dropdown */
+        .notifications-dropdown {
+            display: none;
+            position: absolute;
+            top: 30px;
+            right: 0;
+            background-color: white;
+            width: 300px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+       
+        .notification-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+        }
+       
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+       
+        .notification-header {
+            padding: 10px 15px;
+            background-color: #f8f8f8;
+            border-bottom: 1px solid #eee;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+        }
+       
+        /* View toggles for mobile */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+           
+            .sidebar {
+                width: 100%;
+                height: auto;
+                position: relative;
+                padding: 10px;
+            }
+           
+            .sidebar-menu {
+                display: flex;
+                justify-content: space-around;
+                width: 100%;
+            }
+           
+            .sidebar-menu li {
+                padding: 10px;
+            }
+           
+            .sidebar-menu span {
+                display: none;
+            }
+           
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+            }
+           
+            .modal-content {
+                width: 90%;
+            }
+           
+            table {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h1 class="sidebar-title">Faculty Portal</h1>
+        <ul class="sidebar-menu">
+            <li data-panel="courses-panel" class="active">
+                <i>📚</i>
+                <span>Courses</span>
+            </li>
+            <li data-panel="assignments-panel">
+                <i>📝</i>
+                <span>Assignments</span>
+            </li>
+            <li data-panel="performance-panel">
+                <i>📊</i>
+                <span>Performance</span>
+            </li>
+            <li data-panel="notifications-panel">
+                <i>🔔</i>
+                <span>Notifications</span>
+            </li>
+        </ul>
+    </div>
+   
+    <div class="main-content">
+        <div class="welcome-header">
+            <h1>Welcome, Professor Smith</h1>
+            <div class="notification-icon" id="notification-icon">
+                <i>🔔</i>
+                <span class="notification-count">3</span>
+               
+                <div class="notifications-dropdown" id="notifications-dropdown">
+                    <div class="notification-header">
+                        <span>Notifications</span>
+                        <span id="clear-notifications" style="cursor: pointer; font-size: 12px;">Clear All</span>
+                    </div>
+                    <div class="notification-item">
+                        <strong>System Maintenance</strong>
+                        <p>Scheduled maintenance tonight from 2-4 AM.</p>
+                    </div>
+                    <div class="notification-item">
+                        <strong>New Assignment Submission</strong>
+                        <p>John Doe submitted Week 1 Assignment.</p>
+                    </div>
+                    <div class="notification-item">
+                        <strong>Grading Reminder</strong>
+                        <p>5 submissions are pending review.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+       
+        <!-- Courses Panel -->
+        <div class="panel active" id="courses-panel">
+            <div class="panel-header">
+                <h2>Course Management</h2>
+                <button class="button" id="create-course-btn">Create New Course</button>
+            </div>
+           
+            <div class="course-item">
+                <div class="course-title">Introduction to Computer Science</div>
+                <div class="course-meta">CS101 - 120 Students</div>
+                <button class="button" id="manage-content-btn">Manage Content</button>
+            </div>
+        </div>
+       
+        <!-- Assignments Panel -->
+        <div class="panel" id="assignments-panel">
+            <div class="panel-header">
+                <h2>Assignment & Quiz Management</h2>
+                <div>
+                    <button class="button" id="upload-assignment-btn">Upload Assignment</button>
+                    <button class="button" id="create-quiz-btn">Create Quiz</button>
+                </div>
+            </div>
+           
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Type</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="assignment-row" data-id="1">
+                        <td>Week 1 Programming Assignment</td>
+                        <td>Assignment</td>
+                        <td>2023-03-15</td>
+                        <td>Active</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+       
+        <!-- Performance Panel -->
+        <div class="panel" id="performance-panel">
+            <h2 class="panel-header">Student Performance Tracking</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Progress</th>
+                        <th>Grade</th>
+                        <th>Feedback</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="student-row" data-id="101">
+                        <td>John Doe</td>
+                        <td>
+                            <div class="progress-bar">
+                                <div class="progress-bar-fill"></div>
+                            </div>
+                        </td>
+                        <td>A</td>
+                        <td>
+                            <button class="feedback-button">Add Feedback</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+       
+        <!-- Notifications Panel -->
+        <div class="panel" id="notifications-panel">
+            <h2 class="panel-header">Notifications & Reminders</h2>
+            <textarea class="notification-box" placeholder="Write announcement..."></textarea>
+            <button class="notification-button" id="send-notification-btn">Send Notification</button>
+        </div>
+    </div>
+   
+    <!-- Create Course Modal -->
+    <div class="modal" id="create-course-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Create New Course</h2>
+            <form id="create-course-form">
+                <div class="form-group">
+                    <label for="course-title">Course Title</label>
+                    <input type="text" id="course-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="course-code">Course Code</label>
+                    <input type="text" id="course-code" required>
+                </div>
+                <div class="form-group">
+                    <label for="course-description">Course Description</label>
+                    <textarea id="course-description" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="course-semester">Semester</label>
+                    <select id="course-semester">
+                        <option value="Fall 2023">Fall 2023</option>
+                        <option value="Spring 2024">Spring 2024</option>
+                        <option value="Summer 2024">Summer 2024</option>
+                    </select>
+                </div>
+                <button type="submit" class="button">Create Course</button>
+            </form>
+        </div>
+    </div>
+   
+    <!-- Upload Assignment Modal -->
+    <div class="modal" id="upload-assignment-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Upload Assignment</h2>
+            <form id="upload-assignment-form">
+                <div class="form-group">
+                    <label for="assignment-title">Assignment Title</label>
+                    <input type="text" id="assignment-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="assignment-course">Course</label>
+                    <select id="assignment-course">
+                        <option value="CS101">CS101 - Introduction to Computer Science</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="assignment-due">Due Date</label>
+                    <input type="date" id="assignment-due" required>
+                </div>
+                <div class="form-group">
+                    <label for="assignment-description">Description</label>
+                    <textarea id="assignment-description" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="assignment-file">Upload File</label>
+                    <input type="file" id="assignment-file">
+                </div>
+                <button type="submit" class="button">Upload Assignment</button>
+            </form>
+        </div>
+    </div>
+   
+    <!-- Create Quiz Modal -->
+    <div class="modal" id="create-quiz-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Create Quiz</h2>
+            <form id="create-quiz-form">
+                <div class="form-group">
+                    <label for="quiz-title">Quiz Title</label>
+                    <input type="text" id="quiz-title" required>
+                </div>
+                <div class="form-group">
+                    <label for="quiz-course">Course</label>
+                    <select id="quiz-course">
+                        <option value="CS101">CS101 - Introduction to Computer Science</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="quiz-due">Due Date</label>
+                    <input type="date" id="quiz-due" required>
+                </div>
+                <div class="form-group">
+                    <label for="quiz-time">Time Limit (minutes)</label>
+                    <input type="number" id="quiz-time" min="5" value="30">
+                </div>
+                <div class="form-group">
+                    <label for="quiz-attempts">Allowed Attempts</label>
+                    <input type="number" id="quiz-attempts" min="1" value="1">
+                </div>
+                <button type="submit" class="button">Create Quiz</button>
+            </form>
+        </div>
+    </div>
+   
+    <!-- Feedback Modal -->
+    <div class="modal" id="feedback-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Add Feedback</h2>
+            <form id="feedback-form">
+                <div class="form-group">
+                    <label for="student-name">Student</label>
+                    <input type="text" id="student-name" value="John Doe" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="feedback-text">Feedback</label>
+                    <textarea id="feedback-text" rows="6" required></textarea>
+                </div>
+                <button type="submit" class="button">Submit Feedback</button>
+            </form>
+        </div>
+    </div>
+   
+    <!-- Course Content Modal -->
+    <div class="modal" id="course-content-modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Manage Course Content</h2>
+            <h3>Introduction to Computer Science (CS101)</h3>
+           
+            <div style="margin-top: 20px;">
+                <h4>Course Modules</h4>
+                <ul style="list-style-type: none; padding: 0;">
+                    <li style="padding: 10px; border-bottom: 1px solid #eee;">
+                        <strong>Module 1: Introduction to Programming</strong>
+                        <div>
+                            <button class="button" style="margin-top: 5px; font-size: 12px;">Edit</button>
+                            <button class="button" style="margin-top: 5px; font-size: 12px; margin-left: 5px;">Add Content</button>
+                        </div>
+                    </li>
+                    <li style="padding: 10px; border-bottom: 1px solid #eee;">
+                        <strong>Module 2: Variables and Data Types</strong>
+                        <div>
+                            <button class="button" style="margin-top: 5px; font-size: 12px;">Edit</button>
+                            <button class="button" style="margin-top: 5px; font-size: 12px; margin-left: 5px;">Add Content</button>
+                        </div>
+                    </li>
+                    <li style="padding: 10px;">
+                        <button class="button">Add New Module</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Panel switching
+        document.querySelectorAll('.sidebar-menu li').forEach(item => {
+            item.addEventListener('click', function() {
+                // Update active menu item
+                document.querySelectorAll('.sidebar-menu li').forEach(li => {
+                    li.classList.remove('active');
+                });
+                this.classList.add('active');
+               
+                // Show corresponding panel
+                const panelId = this.getAttribute('data-panel');
+                document.querySelectorAll('.panel').forEach(panel => {
+                    panel.classList.remove('active');
+                });
+                document.getElementById(panelId).classList.add('active');
+            });
+        });
+       
+        // Modal handling functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+        }
+       
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+       
+        // Close modal when clicking the X
+        document.querySelectorAll('.close-modal').forEach(closeBtn => {
+            closeBtn.addEventListener('click', closeAllModals);
+        });
+       
+        // Close modal when clicking outside of it
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                closeAllModals();
+            }
+        });
+       
+        // Button click events
+        document.getElementById('create-course-btn').addEventListener('click', function() {
+            openModal('create-course-modal');
+        });
+       
+        document.getElementById('upload-assignment-btn').addEventListener('click', function() {
+            openModal('upload-assignment-modal');
+        });
+       
+        document.getElementById('create-quiz-btn').addEventListener('click', function() {
+            openModal('create-quiz-modal');
+        });
+       
+        document.getElementById('manage-content-btn').addEventListener('click', function() {
+            openModal('course-content-modal');
+        });
+       
+        document.querySelectorAll('.feedback-button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                openModal('feedback-modal');
+            });
+        });
+       
+        // Form submissions
+        document.getElementById('create-course-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const title = document.getElementById('course-title').value;
+            const code = document.getElementById('course-code').value;
+           
+            // In a real app, this would send data to a server
+            alert(`New course created: ${title} (${code})`);
+           
+            // Add course to the list
+            const coursesPanel = document.getElementById('courses-panel');
+            const newCourse = document.createElement('div');
+            newCourse.className = 'course-item';
+            newCourse.innerHTML = `
+                <div class="course-title">${title}</div>
+                <div class="course-meta">${code} - 0 Students</div>
+                <button class="button">Manage Content</button>
+            `;
+            coursesPanel.appendChild(newCourse);
+           
+            closeAllModals();
+            this.reset();
+        });
+       
+        document.getElementById('upload-assignment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const title = document.getElementById('assignment-title').value;
+            const due = document.getElementById('assignment-due').value;
+           
+            // In a real app, this would send data to a server
+            alert(`New assignment uploaded: ${title} (Due: ${due})`);
+           
+            // Add assignment to the table
+            const assignmentTable = document.querySelector('#assignments-panel tbody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${title}</td>
+                <td>Assignment</td>
+                <td>${due}</td>
+                <td>Active</td>
+            `;
+            assignmentTable.appendChild(newRow);
+           
+            closeAllModals();
+            this.reset();
+        });
+       
+        document.getElementById('create-quiz-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const title = document.getElementById('quiz-title').value;
+            const due = document.getElementById('quiz-due').value;
+           
+            // In a real app, this would send data to a server
+            alert(`New quiz created: ${title} (Due: ${due})`);
+           
+            // Add quiz to the table
+            const assignmentTable = document.querySelector('#assignments-panel tbody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>${title}</td>
+                <td>Quiz</td>
+                <td>${due}</td>
+                <td>Active</td>
+            `;
+            assignmentTable.appendChild(newRow);
+           
+            closeAllModals();
+            this.reset();
+        });
+       
+        document.getElementById('feedback-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const feedback = document.getElementById('feedback-text').value;
+           
+            // In a real app, this would send data to a server
+            alert(`Feedback submitted for John Doe: ${feedback}`);
+           
+            closeAllModals();
+            this.reset();
+        });
+       
+        document.getElementById('send-notification-btn').addEventListener('click', function() {
+            const message = document.querySelector('.notification-box').value;
+            if (message) {
+                alert(`Notification sent: ${message}`);
+                document.querySelector('.notification-box').value = '';
+            } else {
+                alert('Please enter a message to send.');
+            }
+        });
+       
+        // Notifications dropdown
+        document.getElementById('notification-icon').addEventListener('click', function(e) {
+            e.stopPropagation();
+            const dropdown = document.getElementById('notifications-dropdown');
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        });
+       
+        document.getElementById('clear-notifications').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.querySelectorAll('.notification-item').forEach(item => {
+                item.remove();
+            });
+            document.querySelector('.notification-count').textContent = '0';
+        });
+       
+        // Close notifications dropdown when clicking elsewhere
+        window.addEventListener('click', function() {
+            document.getElementById('notifications-dropdown').style.display = 'none';
+        });
+       
+        // Make assignment rows clickable
+        document.querySelectorAll('.assignment-row').forEach(row => {
+            row.addEventListener('click', function() {
+                alert(`Viewing details for: ${this.querySelector('td').textContent}`);
+            });
+            row.style.cursor = 'pointer';
+        });
+       
+        // Make student rows clickable
+        document.querySelectorAll('.student-row').forEach(row => {
+            row.addEventListener('click', function(e) {
+                // Don't trigger if clicking the feedback button
+                if (!e.target.classList.contains('feedback-button')) {
+                    alert(`Viewing detailed performance for: ${this.querySelector('td').textContent}`);
+                }
+            });
+            row.style.cursor = 'pointer';
+        });
+    </script>
+</body>
+</html>
