@@ -49,8 +49,13 @@ The objective of this project is to develop a **Web2-based e-learning system** t
 >  React, Node.js, Tailwind CSS, HTML, etc.
 
 ---
+## 🛣️ Ways to Run the Program
+> Open the code editor with "loginpage.html" and then run the program using Live Server.
 
-## 🙌 Credits
-This project was developed with assistance from **ChatGPT (OpenAI), Claude**.
 ---
-This project is developed by **Ayutayam Sutar, Siddharth Kumar Jena & Ashutosh Nayak** as part of a **Web Hackathon** initiative.
+## 🙌 Credits
+> This project was developed with assistance from **ChatGPT (OpenAI), Claude**.
+> This project is developed by **Ayutayam Sutar, Siddharth Kumar Jena & Ashutosh Nayak** as part of a **Web Hackathon** initiative.
+
+---
+
